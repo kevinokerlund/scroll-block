@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow: auto">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<style>
+
+		#actions {
+			background-color: lightcoral;
+			position: fixed;
+			top: 0;
+			right: 0;
+			padding: 20px;
+		}
+
+		.wide {
+			border: 1px solid lightgrey;
+			height: 100px;
+			width: 130%;
+			overflow: auto;
+			margin: 10px;
+		}
+
+		.wide div {
+			display: inline;
+		}
+
+		.box {
+			border: 1px solid lightgrey;
+			float: left;
+			margin: 10px;
+			max-height: 500px;
+			overflow-y: auto;
+			width: 200px;
+		}
+
+		.\+tall {
+			max-height: 1300px;
+		}
+
+		.ignore-global {
+			border-color: lightcoral;
+		}
+
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="lib/scroll-block.js"></script>
+</head>
+<body class="    whatchamacallit testing ">
+
+<div id="actions">
+	<button onclick="ScrollBlock.on()">Block Scrolling</button>
+	<button onclick="ScrollBlock.off()">UnBlock Scrolling</button>
+</div>
+
+<div class="fill-numbers wide"></div>
+<div class="fill-numbers box ignore-global"></div>
+<div class="fill-numbers box">
+	<input>
+</div>
+<div class="fill-numbers box"></div>
+<div class="fill-numbers box"></div>
+<div></div>
+<div class="fill-numbers box +tall"></div>
+
+<script>
+
+	var fillNumbers = document.querySelectorAll('.fill-numbers');
+	for (var i = 0; i < 200; i++) {
+		for (var e = 0; e < fillNumbers.length; e++) {
+			var div = document.createElement('div');
+			div.textContent = i + 'adaskjdhaskjdhaskjdhaskjdkajsdhkasjdhaksjdh';
+			fillNumbers[e].appendChild(div);
+			fillNumbers[e].scrollTop = 200 * e;
+		}
+	}
+
+	ScrollBlock.ignore('.ignore-global');
+
+	//	console.log(ScrollBlock.ignoredElements);
+
+	//	ScrollBlock.removeIgnored('.ignore-global');
+
+	//	console.log(ScrollBlock.ignoredElements);
+
+	//	ScrollBlock.on();
+
+	//	console.log(ScrollBlock.isBlocked)
+
+//var keyCodesToIgnore = [
+//	32, // space bar
+//	37, // left arrow
+//	38, // up arrow
+//	39, // right arrow
+//	40 // down arrow
+//];
+//window.addEventListener('keydown', function (e) {
+//	if (e.target == document.body && document.activeElement == document.body) {
+//		console.log(e.keyCode);
+//		if (keyCodesToIgnore.indexOf(e.keyCode) > -1) {
+//			e.preventDefault();
+//		}
+//	}
+//});
+
+//	window.addEventListener('keydown', function (e) {
+//		if (e.keyCode == 32) {
+//			console.log('BAM!');
+////			alert('Search!');
+//		}
+//	});
+//
+//	window.addEventListener('click', function () {
+////		console.log('Active', document.activeElement);
+////		console.log('Target', e.target);
+//	});
+
+</script>
+
+</body>
+</html>
