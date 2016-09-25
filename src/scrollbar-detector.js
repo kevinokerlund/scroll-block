@@ -14,10 +14,7 @@ export default function getScrollBarData() {
 	// outerDiv.style.left = '0px';
 	// outerDiv.backgroundColor = 'lightyellow';
 
-	let appendElement = (function () {
-		var body = document.querySelector('body');
-		return (body) ? body : document.querySelector('html');
-	})();
+	let appendElement = document.body || document.querySelector('html');
 
 	appendElement.appendChild(outerDiv);
 

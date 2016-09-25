@@ -9,18 +9,20 @@ export function removeEvent(element, eventName, callback) {
 }
 
 export function addClass(element, ...classes) {
-	var currentClasses = element.className.trim().split(/\s+/);
-	element.className = currentClasses
+	let currentClassNames = element.className.trim().split(/\s+/);
+	element.className = currentClassNames
 		.concat(
-			classes.filter(cls => !currentClasses.includes(cls.trim()))
+			classes.filter(className => !currentClassNames.includes(className.trim()))
 		)
 		.join(' ')
 		.trim();
 }
 
 export function removeClass(element, ...classes) {
-	element.className = element.className.trim().split(/\s+/)
-		.filter(cls => !classes.includes(cls.trim()))
+	element.className = element.className
+		.trim()
+		.split(/\s+/)
+		.filter(className => !classes.includes(className.trim()))
 		.join(' ')
 		.trim();
 }
