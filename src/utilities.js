@@ -1,4 +1,4 @@
-import 'core-js/fn/array/includes';
+import './polyfills/array-includes.js';
 
 export function addEvent(element, eventName, callback) {
 	element.addEventListener(eventName, callback);
