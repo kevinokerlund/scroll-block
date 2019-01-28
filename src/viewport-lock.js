@@ -77,3 +77,8 @@ export function unlock() {
 
 	scrollBackToSavedPosition();
 }
+
+export default {
+	lock,
+	unlock
+}

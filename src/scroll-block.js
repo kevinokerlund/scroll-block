@@ -1,118 +1,42 @@
-import * as Utils from './utilities.js';
-import * as ViewPort from './viewport-lock.js'
+import ViewPort from './viewport-lock';
 
-let _globallyBlocked = false;
-let _globallyIgnored = [];
-
-function isInIgnoredElement(targetEl) {
-	return _globallyIgnored.some(el => el.contains(targetEl));
-}
-
-function preventDefault(e) {
-	if (!isInIgnoredElement(e.target)) {
-		e.preventDefault();
-	}
-}
-
-let currentTarget = null;
-let cachedVerticalPosition = 0;
-let cachedHorizontalPosition = 0;
-
-function mouseDown(e) {
-	if (isInIgnoredElement(e.target)) {
-		return false;
-	}
-	currentTarget = e.target;
-	cachedVerticalPosition = currentTarget.scrollTop;
-	cachedHorizontalPosition = currentTarget.scrollLeft;
-
-	currentTarget.addEventListener('mouseup', mouseUp);
-	currentTarget.addEventListener('scroll', scrollBarDrag)
-}
-
-function mouseUp() {
-	scrollBarDrag();
-	currentTarget.removeEventListener('mouseup', mouseUp);
-	currentTarget.removeEventListener('scroll', scrollBarDrag);
-}
-
-function scrollBarDrag() {
-	currentTarget.scrollTop = cachedVerticalPosition;
-	currentTarget.scrollLeft = cachedHorizontalPosition;
-}
-
-function turnBlockingOn() {
-	ViewPort.lock();
-
-	Utils.addEvent(window, 'wheel', preventDefault);
-	Utils.addEvent(window, 'mousedown', mouseDown);
-	_globallyBlocked = true;
-}
-
-function turnBlockingOff() {
-	ViewPort.unlock();
-
-	Utils.removeEvent(window, 'wheel', preventDefault);
-	Utils.removeEvent(window, 'mousedown', mouseDown);
-	_globallyBlocked = false;
-}
+window.Viewport = ViewPort;
 
 class ScrollBlock {
 	constructor() {
-		// this.blocked = false;
-		// this.ignoredElements = [];
+		this.isOn = false;
+		this.ignoredElements = [];
 	}
 
-	static get isBlocked() {
-		return _globallyBlocked;
+	on() {
+		if (!this.isOn) {
+			console.log('Turning ScrollBlock on');
+			ViewPort.lock();
+			this.isOn = true;
+		}
+		return this;
 	}
 
-	static get ignoredElements() {
-		return _globallyIgnored;
+	off() {
+		if (this.isOn) {
+			console.log('Turning ScrollBlock off');
+			ViewPort.unlock();
+			this.isOn = false;
+		}
+		return this;
 	}
 
-	static on() {
-		if (!_globallyBlocked) {
-			turnBlockingOn();
-		}
+	toggle(shouldTurnOn = !this.isOn) {
+		(shouldTurnOn) ? this.on() : this.off();
+		return this;
 	}
 
-	static off() {
-		if (_globallyBlocked) {
-			turnBlockingOff();
-		}
+	ignore() {
+		return this;
 	}
 
-	static toggle(shouldTurnOn = !_globallyBlocked) {
-		if (shouldTurnOn) {
-			this.on();
-		}
-		else {
-			this.off();
-		}
-	}
-
-	static ignore(selectorOrElement) {
-		if (selectorOrElement && selectorOrElement.tagName) {
-			_globallyIgnored.push(selectorOrElement);
-		}
-		else {
-			_globallyIgnored = _globallyIgnored.concat(
-				Array
-					.from(document.querySelectorAll(selectorOrElement))
-					.filter(el => !_globallyIgnored.includes(el))
-			);
-		}
-	}
-
-	static removeIgnored(selectorOrElement) {
-		if (selectorOrElement && selectorOrElement.tagName) {
-			_globallyIgnored = _globallyIgnored.filter(el => el !== selectorOrElement);
-		}
-		else {
-			let elements = Array.from(document.querySelectorAll(selectorOrElement));
-			_globallyIgnored = _globallyIgnored.filter(el => !elements.includes(el));
-		}
+	removeIgnored() {
+		return this;
 	}
 }
 

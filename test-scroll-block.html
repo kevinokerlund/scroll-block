@@ -75,7 +75,7 @@
 		}
 	}
 
-	ScrollBlock.ignore('.ignore-global');
+	//	ScrollBlock.ignore('.ignore-global');
 
 	//	console.log(ScrollBlock.ignoredElements);
 
@@ -87,33 +87,107 @@
 
 	//	console.log(ScrollBlock.isBlocked)
 
-//var keyCodesToIgnore = [
-//	32, // space bar
-//	37, // left arrow
-//	38, // up arrow
-//	39, // right arrow
-//	40 // down arrow
-//];
-//window.addEventListener('keydown', function (e) {
-//	if (e.target == document.body && document.activeElement == document.body) {
-//		console.log(e.keyCode);
-//		if (keyCodesToIgnore.indexOf(e.keyCode) > -1) {
-//			e.preventDefault();
-//		}
-//	}
-//});
+	//var keyCodesToIgnore = [
+	//	32, // space bar
+	//	37, // left arrow
+	//	38, // up arrow
+	//	39, // right arrow
+	//	40 // down arrow
+	//];
+	//window.addEventListener('keydown', function (e) {
+	//	if (e.target == document.body && document.activeElement == document.body) {
+	//		console.log(e.keyCode);
+	//		if (keyCodesToIgnore.indexOf(e.keyCode) > -1) {
+	//			e.preventDefault();
+	//		}
+	//	}
+	//});
 
-//	window.addEventListener('keydown', function (e) {
-//		if (e.keyCode == 32) {
-//			console.log('BAM!');
-////			alert('Search!');
-//		}
-//	});
-//
-//	window.addEventListener('click', function () {
-////		console.log('Active', document.activeElement);
-////		console.log('Target', e.target);
-//	});
+	//	window.addEventListener('keydown', function (e) {
+	//		if (e.keyCode == 32) {
+	//			console.log('BAM!');
+	////			alert('Search!');
+	//		}
+	//	});
+	//
+	//	window.addEventListener('click', function () {
+	////		console.log('Active', document.activeElement);
+	////		console.log('Target', e.target);
+	//	});
+
+	//	var $window = $(window), previousScrollTop = 0, scrollLock = false;
+	//
+	//
+	//
+	//	$window.scroll(function(event) {
+	//		if(scrollLock) {
+	//			$window.scrollTop(previousScrollTop);
+	//			window.setTimeout(function () {
+	//				$window.scrollTop(previousScrollTop);
+	//			});
+	//		}
+	//
+	//		previousScrollTop = $window.scrollTop();
+	//
+	//	});
+
+	var body = document.body;
+
+	var oldLeft = body.scrollLeft;
+	var oldTop = body.scrollTop;
+
+	var overlay;
+
+	function scrollBack() {
+		window.scrollTo(oldLeft, oldTop);
+		body.scrollLeft = oldLeft;
+		body.scrollTop = oldTop;
+	}
+
+	function makeOverlay() {
+		overlay = document.createElement('div');
+		overlay.style.position = 'fixed';
+		overlay.style.top = 0;
+		overlay.style.right = 0;
+		overlay.style.bottom = 0;
+		overlay.style.left = 0;
+		document.body.appendChild(overlay);
+	}
+
+	function removeOverlay() {
+		body.removeChild(overlay);
+	}
+
+	var scrollTimer;
+
+	window.addEventListener('scroll', function (e) {
+		console.log('scrolling');
+		scrollBack();
+		window.setTimeout(scrollBack, 10);
+
+		clearTimeout(scrollTimer);
+		scrollTimer = window.setTimeout(function () {
+			console.log('Done Scrolling');
+//			Viewport.unlock();
+			removeOverlay();
+		}, 100);
+	});
+
+	document.addEventListener('mouseout', function (e) {
+		if (e.toElement == null && e.relatedTarget == null) {
+			makeOverlay();
+			Viewport.lock();
+			window.setTimeout(Viewport.unlock, 100);
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		}
+	});
+
+	window.addEventListener('mousewheel', function (e) {
+//		e.preventDefault();
+	});
+
 
 </script>
 
